@@ -163,7 +163,7 @@ Friend Class frmCalibrate
             ' Create the Excel Workbook Object.
             On Error GoTo 0
             xlBook = xlApp.Workbooks.Add 'add a workbook
-            NewWorkBook() 'do some stuff for the new workbook
+            NewWorkBook(SaveFileName) 'do some stuff for the new workbook
             xlApp.ActiveWorkbook.SaveAs(Filename:=SaveFileName, FileFormat:=xlApp.XlWindowState.xlNormal) 'save the file
             MsgBox(OpenFileDialog1.FileName & " has been opened for writing.", MsgBoxStyle.OkOnly, "File Opened") 'tell the user that file is open
         Else 'the file name already exists

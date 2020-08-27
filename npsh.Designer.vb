@@ -192,6 +192,8 @@
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
+        Me.lbldatarow = New System.Windows.Forms.Label()
+        Me.lblInputData = New System.Windows.Forms.Label()
         Me.Frame1 = New System.Windows.Forms.GroupBox()
         Me.txtFlow = New System.Windows.Forms.TextBox()
         Me.txtSuction = New System.Windows.Forms.TextBox()
@@ -269,20 +271,51 @@
         Me.Label15 = New System.Windows.Forms.Label()
         Me.Label16 = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.OpenFileDialog2 = New System.Windows.Forms.OpenFileDialog()
+        Me.ListBox1 = New System.Windows.Forms.ListBox()
+        Me.lblListBox = New System.Windows.Forms.Label()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.lblRPM = New System.Windows.Forms.Label()
+        Me.lblFrequency = New System.Windows.Forms.Label()
+        Me.lblVoltage = New System.Windows.Forms.Label()
+        Me.Label66 = New System.Windows.Forms.Label()
+        Me.Label67 = New System.Windows.Forms.Label()
+        Me.Label68 = New System.Windows.Forms.Label()
+        Me.lblMounting = New System.Windows.Forms.Label()
+        Me.lblCircPath = New System.Windows.Forms.Label()
+        Me.lblImpDia = New System.Windows.Forms.Label()
+        Me.lblNPSHa = New System.Windows.Forms.Label()
+        Me.lblNPSHr = New System.Windows.Forms.Label()
+        Me.lblDesignFlow = New System.Windows.Forms.Label()
+        Me.Label61 = New System.Windows.Forms.Label()
+        Me.Label62 = New System.Windows.Forms.Label()
+        Me.Label59 = New System.Windows.Forms.Label()
+        Me.Label60 = New System.Windows.Forms.Label()
+        Me.Label58 = New System.Windows.Forms.Label()
+        Me.Label57 = New System.Windows.Forms.Label()
+        Me.lblSalesOrder = New System.Windows.Forms.Label()
+        Me.lblModelNumber = New System.Windows.Forms.Label()
+        Me.lblCustomer = New System.Windows.Forms.Label()
+        Me.Label53 = New System.Windows.Forms.Label()
+        Me.Label51 = New System.Windows.Forms.Label()
+        Me.Label50 = New System.Windows.Forms.Label()
+        Me.lblDesignTDH = New System.Windows.Forms.Label()
+        Me.Label64 = New System.Windows.Forms.Label()
         Me.Frame4.SuspendLayout()
         Me.Frame2.SuspendLayout()
         Me.Frame1.SuspendLayout()
         Me.Frame3.SuspendLayout()
         CType(Me.Chart1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
         'ShapeContainer1
         '
-        Me.ShapeContainer1.Location = New System.Drawing.Point(0, 19)
+        Me.ShapeContainer1.Location = New System.Drawing.Point(0, 15)
         Me.ShapeContainer1.Margin = New System.Windows.Forms.Padding(0)
         Me.ShapeContainer1.Name = "ShapeContainer1"
         Me.ShapeContainer1.Shapes.AddRange(New Microsoft.VisualBasic.PowerPacks.Shape() {Me.shpGetPLCData})
-        Me.ShapeContainer1.Size = New System.Drawing.Size(449, 54)
+        Me.ShapeContainer1.Size = New System.Drawing.Size(449, 58)
         Me.ShapeContainer1.TabIndex = 31
         Me.ShapeContainer1.TabStop = False
         '
@@ -303,14 +336,15 @@
         Me.Frame4.Controls.Add(Me.RadioButtonGauge)
         Me.Frame4.Font = New System.Drawing.Font("Arial", 8.25!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Frame4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Frame4.Location = New System.Drawing.Point(320, 136)
+        Me.Frame4.Location = New System.Drawing.Point(316, 130)
         Me.Frame4.Name = "Frame4"
         Me.Frame4.Padding = New System.Windows.Forms.Padding(0)
         Me.Frame4.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Frame4.Size = New System.Drawing.Size(201, 41)
+        Me.Frame4.Size = New System.Drawing.Size(201, 47)
         Me.Frame4.TabIndex = 111
         Me.Frame4.TabStop = False
         Me.Frame4.Text = "Input Discharge Pressure"
+        Me.Frame4.Visible = False
         '
         'RadioButtonAbsolute
         '
@@ -354,7 +388,7 @@
         Me.txtConstantFlow.MaxLength = 0
         Me.txtConstantFlow.Name = "txtConstantFlow"
         Me.txtConstantFlow.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtConstantFlow.Size = New System.Drawing.Size(57, 23)
+        Me.txtConstantFlow.Size = New System.Drawing.Size(57, 20)
         Me.txtConstantFlow.TabIndex = 109
         Me.txtConstantFlow.Visible = False
         '
@@ -413,7 +447,7 @@
         Me.txtValvePositionDisplay.MaxLength = 0
         Me.txtValvePositionDisplay.Name = "txtValvePositionDisplay"
         Me.txtValvePositionDisplay.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtValvePositionDisplay.Size = New System.Drawing.Size(49, 23)
+        Me.txtValvePositionDisplay.Size = New System.Drawing.Size(49, 20)
         Me.txtValvePositionDisplay.TabIndex = 104
         '
         'txtValvePosition
@@ -427,7 +461,7 @@
         Me.txtValvePosition.MaxLength = 0
         Me.txtValvePosition.Name = "txtValvePosition"
         Me.txtValvePosition.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtValvePosition.Size = New System.Drawing.Size(63, 23)
+        Me.txtValvePosition.Size = New System.Drawing.Size(63, 20)
         Me.txtValvePosition.TabIndex = 102
         Me.txtValvePosition.Text = "Text1"
         Me.txtValvePosition.Visible = False
@@ -443,7 +477,7 @@
         Me.txtDeltaSuctionPressure.MaxLength = 0
         Me.txtDeltaSuctionPressure.Name = "txtDeltaSuctionPressure"
         Me.txtDeltaSuctionPressure.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDeltaSuctionPressure.Size = New System.Drawing.Size(145, 62)
+        Me.txtDeltaSuctionPressure.Size = New System.Drawing.Size(145, 51)
         Me.txtDeltaSuctionPressure.TabIndex = 100
         Me.txtDeltaSuctionPressure.Text = "Text1"
         Me.txtDeltaSuctionPressure.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
@@ -459,7 +493,7 @@
         Me.txtNPSHa97.MaxLength = 0
         Me.txtNPSHa97.Name = "txtNPSHa97"
         Me.txtNPSHa97.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNPSHa97.Size = New System.Drawing.Size(145, 76)
+        Me.txtNPSHa97.Size = New System.Drawing.Size(145, 63)
         Me.txtNPSHa97.TabIndex = 97
         Me.txtNPSHa97.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -474,7 +508,7 @@
         Me.txtTDH97.MaxLength = 0
         Me.txtTDH97.Name = "txtTDH97"
         Me.txtTDH97.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTDH97.Size = New System.Drawing.Size(145, 76)
+        Me.txtTDH97.Size = New System.Drawing.Size(145, 63)
         Me.txtTDH97.TabIndex = 96
         Me.txtTDH97.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -489,7 +523,7 @@
         Me.txtDischGaugeHeight.MaxLength = 0
         Me.txtDischGaugeHeight.Name = "txtDischGaugeHeight"
         Me.txtDischGaugeHeight.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDischGaugeHeight.Size = New System.Drawing.Size(33, 23)
+        Me.txtDischGaugeHeight.Size = New System.Drawing.Size(33, 20)
         Me.txtDischGaugeHeight.TabIndex = 91
         Me.txtDischGaugeHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -505,7 +539,7 @@
         Me.txtNPSHa.MaxLength = 0
         Me.txtNPSHa.Name = "txtNPSHa"
         Me.txtNPSHa.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNPSHa.Size = New System.Drawing.Size(49, 23)
+        Me.txtNPSHa.Size = New System.Drawing.Size(49, 20)
         Me.txtNPSHa.TabIndex = 82
         Me.txtNPSHa.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -521,7 +555,7 @@
         Me.txtTDH.MaxLength = 0
         Me.txtTDH.Name = "txtTDH"
         Me.txtTDH.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTDH.Size = New System.Drawing.Size(49, 23)
+        Me.txtTDH.Size = New System.Drawing.Size(49, 20)
         Me.txtTDH.TabIndex = 81
         Me.txtTDH.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -537,7 +571,7 @@
         Me.txtInHgDisplay.MaxLength = 0
         Me.txtInHgDisplay.Name = "txtInHgDisplay"
         Me.txtInHgDisplay.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtInHgDisplay.Size = New System.Drawing.Size(49, 23)
+        Me.txtInHgDisplay.Size = New System.Drawing.Size(49, 20)
         Me.txtInHgDisplay.TabIndex = 80
         Me.txtInHgDisplay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -553,7 +587,7 @@
         Me.txtInHg.MaxLength = 0
         Me.txtInHg.Name = "txtInHg"
         Me.txtInHg.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtInHg.Size = New System.Drawing.Size(17, 23)
+        Me.txtInHg.Size = New System.Drawing.Size(17, 20)
         Me.txtInHg.TabIndex = 78
         Me.txtInHg.Visible = False
         '
@@ -569,7 +603,7 @@
         Me.txtFlowForCalcs.MaxLength = 0
         Me.txtFlowForCalcs.Name = "txtFlowForCalcs"
         Me.txtFlowForCalcs.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFlowForCalcs.Size = New System.Drawing.Size(49, 23)
+        Me.txtFlowForCalcs.Size = New System.Drawing.Size(49, 20)
         Me.txtFlowForCalcs.TabIndex = 76
         Me.txtFlowForCalcs.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -585,7 +619,7 @@
         Me.txtPctHead.MaxLength = 0
         Me.txtPctHead.Name = "txtPctHead"
         Me.txtPctHead.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPctHead.Size = New System.Drawing.Size(49, 23)
+        Me.txtPctHead.Size = New System.Drawing.Size(49, 20)
         Me.txtPctHead.TabIndex = 73
         Me.txtPctHead.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -601,7 +635,7 @@
         Me.txtAveTDH.MaxLength = 0
         Me.txtAveTDH.Name = "txtAveTDH"
         Me.txtAveTDH.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAveTDH.Size = New System.Drawing.Size(49, 23)
+        Me.txtAveTDH.Size = New System.Drawing.Size(49, 20)
         Me.txtAveTDH.TabIndex = 72
         Me.txtAveTDH.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -617,7 +651,7 @@
         Me.txtVapPress.MaxLength = 0
         Me.txtVapPress.Name = "txtVapPress"
         Me.txtVapPress.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtVapPress.Size = New System.Drawing.Size(49, 23)
+        Me.txtVapPress.Size = New System.Drawing.Size(49, 20)
         Me.txtVapPress.TabIndex = 68
         '
         'txtSpVol
@@ -632,7 +666,7 @@
         Me.txtSpVol.MaxLength = 0
         Me.txtSpVol.Name = "txtSpVol"
         Me.txtSpVol.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtSpVol.Size = New System.Drawing.Size(49, 23)
+        Me.txtSpVol.Size = New System.Drawing.Size(49, 20)
         Me.txtSpVol.TabIndex = 66
         '
         'txtDischVelHead
@@ -647,7 +681,7 @@
         Me.txtDischVelHead.MaxLength = 0
         Me.txtDischVelHead.Name = "txtDischVelHead"
         Me.txtDischVelHead.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDischVelHead.Size = New System.Drawing.Size(41, 23)
+        Me.txtDischVelHead.Size = New System.Drawing.Size(41, 20)
         Me.txtDischVelHead.TabIndex = 64
         Me.txtDischVelHead.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -663,7 +697,7 @@
         Me.txtSuctVelHead.MaxLength = 0
         Me.txtSuctVelHead.Name = "txtSuctVelHead"
         Me.txtSuctVelHead.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtSuctVelHead.Size = New System.Drawing.Size(41, 23)
+        Me.txtSuctVelHead.Size = New System.Drawing.Size(41, 20)
         Me.txtSuctVelHead.TabIndex = 63
         Me.txtSuctVelHead.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -678,7 +712,7 @@
         Me.txtSuctGaugeHeight.MaxLength = 0
         Me.txtSuctGaugeHeight.Name = "txtSuctGaugeHeight"
         Me.txtSuctGaugeHeight.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtSuctGaugeHeight.Size = New System.Drawing.Size(33, 23)
+        Me.txtSuctGaugeHeight.Size = New System.Drawing.Size(33, 20)
         Me.txtSuctGaugeHeight.TabIndex = 60
         Me.txtSuctGaugeHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -706,7 +740,7 @@
         Me.cmbDisch.Location = New System.Drawing.Point(96, 128)
         Me.cmbDisch.Name = "cmbDisch"
         Me.cmbDisch.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmbDisch.Size = New System.Drawing.Size(81, 24)
+        Me.cmbDisch.Size = New System.Drawing.Size(81, 22)
         Me.cmbDisch.TabIndex = 58
         '
         'cmbSuction
@@ -719,7 +753,7 @@
         Me.cmbSuction.Location = New System.Drawing.Point(96, 96)
         Me.cmbSuction.Name = "cmbSuction"
         Me.cmbSuction.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmbSuction.Size = New System.Drawing.Size(81, 24)
+        Me.cmbSuction.Size = New System.Drawing.Size(81, 22)
         Me.cmbSuction.TabIndex = 54
         '
         'rtbDataOut
@@ -806,7 +840,7 @@
         Me.txtTC4.MaxLength = 0
         Me.txtTC4.Name = "txtTC4"
         Me.txtTC4.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTC4.Size = New System.Drawing.Size(17, 23)
+        Me.txtTC4.Size = New System.Drawing.Size(17, 20)
         Me.txtTC4.TabIndex = 39
         Me.txtTC4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtTC4.Visible = False
@@ -822,7 +856,7 @@
         Me.txtTC3.MaxLength = 0
         Me.txtTC3.Name = "txtTC3"
         Me.txtTC3.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTC3.Size = New System.Drawing.Size(17, 23)
+        Me.txtTC3.Size = New System.Drawing.Size(17, 20)
         Me.txtTC3.TabIndex = 38
         Me.txtTC3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtTC3.Visible = False
@@ -838,7 +872,7 @@
         Me.txtTC2.MaxLength = 0
         Me.txtTC2.Name = "txtTC2"
         Me.txtTC2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTC2.Size = New System.Drawing.Size(17, 23)
+        Me.txtTC2.Size = New System.Drawing.Size(17, 20)
         Me.txtTC2.TabIndex = 37
         Me.txtTC2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtTC2.Visible = False
@@ -854,7 +888,7 @@
         Me.txtTC1.MaxLength = 0
         Me.txtTC1.Name = "txtTC1"
         Me.txtTC1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTC1.Size = New System.Drawing.Size(17, 23)
+        Me.txtTC1.Size = New System.Drawing.Size(17, 20)
         Me.txtTC1.TabIndex = 36
         Me.txtTC1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtTC1.Visible = False
@@ -871,7 +905,7 @@
         Me.txtTC1Display.MaxLength = 0
         Me.txtTC1Display.Name = "txtTC1Display"
         Me.txtTC1Display.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTC1Display.Size = New System.Drawing.Size(73, 23)
+        Me.txtTC1Display.Size = New System.Drawing.Size(73, 20)
         Me.txtTC1Display.TabIndex = 35
         Me.txtTC1Display.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -887,7 +921,7 @@
         Me.txtTC2Display.MaxLength = 0
         Me.txtTC2Display.Name = "txtTC2Display"
         Me.txtTC2Display.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTC2Display.Size = New System.Drawing.Size(73, 23)
+        Me.txtTC2Display.Size = New System.Drawing.Size(73, 20)
         Me.txtTC2Display.TabIndex = 34
         Me.txtTC2Display.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -903,7 +937,7 @@
         Me.txtTC3Display.MaxLength = 0
         Me.txtTC3Display.Name = "txtTC3Display"
         Me.txtTC3Display.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTC3Display.Size = New System.Drawing.Size(73, 23)
+        Me.txtTC3Display.Size = New System.Drawing.Size(73, 20)
         Me.txtTC3Display.TabIndex = 33
         Me.txtTC3Display.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -919,7 +953,7 @@
         Me.txtTC4Display.MaxLength = 0
         Me.txtTC4Display.Name = "txtTC4Display"
         Me.txtTC4Display.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTC4Display.Size = New System.Drawing.Size(73, 23)
+        Me.txtTC4Display.Size = New System.Drawing.Size(73, 20)
         Me.txtTC4Display.TabIndex = 32
         Me.txtTC4Display.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -979,6 +1013,30 @@
         Me.Label8.Text = "1"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
+        'lbldatarow
+        '
+        Me.lbldatarow.AutoSize = True
+        Me.lbldatarow.Font = New System.Drawing.Font("Arial", 16.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbldatarow.ForeColor = System.Drawing.Color.Red
+        Me.lbldatarow.Location = New System.Drawing.Point(15, 805)
+        Me.lbldatarow.Name = "lbldatarow"
+        Me.lbldatarow.Size = New System.Drawing.Size(91, 26)
+        Me.lbldatarow.TabIndex = 122
+        Me.lbldatarow.Text = "Label50"
+        Me.lbldatarow.Visible = False
+        '
+        'lblInputData
+        '
+        Me.lblInputData.AutoSize = True
+        Me.lblInputData.Font = New System.Drawing.Font("Arial", 10.0!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblInputData.ForeColor = System.Drawing.Color.Red
+        Me.lblInputData.Location = New System.Drawing.Point(17, 860)
+        Me.lblInputData.Name = "lblInputData"
+        Me.lblInputData.Size = New System.Drawing.Size(170, 16)
+        Me.lblInputData.TabIndex = 121
+        Me.lblInputData.Text = "Input Data from Excel File"
+        Me.lblInputData.Visible = False
+        '
         'Frame1
         '
         Me.Frame1.BackColor = System.Drawing.SystemColors.Control
@@ -1017,7 +1075,7 @@
         Me.txtFlow.MaxLength = 0
         Me.txtFlow.Name = "txtFlow"
         Me.txtFlow.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFlow.Size = New System.Drawing.Size(17, 23)
+        Me.txtFlow.Size = New System.Drawing.Size(17, 20)
         Me.txtFlow.TabIndex = 26
         Me.txtFlow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtFlow.Visible = False
@@ -1033,7 +1091,7 @@
         Me.txtSuction.MaxLength = 0
         Me.txtSuction.Name = "txtSuction"
         Me.txtSuction.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtSuction.Size = New System.Drawing.Size(17, 23)
+        Me.txtSuction.Size = New System.Drawing.Size(17, 20)
         Me.txtSuction.TabIndex = 25
         Me.txtSuction.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtSuction.Visible = False
@@ -1049,7 +1107,7 @@
         Me.txtDischarge.MaxLength = 0
         Me.txtDischarge.Name = "txtDischarge"
         Me.txtDischarge.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDischarge.Size = New System.Drawing.Size(17, 23)
+        Me.txtDischarge.Size = New System.Drawing.Size(17, 20)
         Me.txtDischarge.TabIndex = 24
         Me.txtDischarge.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtDischarge.Visible = False
@@ -1065,7 +1123,7 @@
         Me.txtTemperature.MaxLength = 0
         Me.txtTemperature.Name = "txtTemperature"
         Me.txtTemperature.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTemperature.Size = New System.Drawing.Size(17, 23)
+        Me.txtTemperature.Size = New System.Drawing.Size(17, 20)
         Me.txtTemperature.TabIndex = 23
         Me.txtTemperature.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtTemperature.Visible = False
@@ -1082,7 +1140,7 @@
         Me.txtSuctionDisplay.MaxLength = 0
         Me.txtSuctionDisplay.Name = "txtSuctionDisplay"
         Me.txtSuctionDisplay.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtSuctionDisplay.Size = New System.Drawing.Size(73, 23)
+        Me.txtSuctionDisplay.Size = New System.Drawing.Size(73, 20)
         Me.txtSuctionDisplay.TabIndex = 22
         Me.txtSuctionDisplay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -1098,7 +1156,7 @@
         Me.txtDischargeDisplay.MaxLength = 0
         Me.txtDischargeDisplay.Name = "txtDischargeDisplay"
         Me.txtDischargeDisplay.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDischargeDisplay.Size = New System.Drawing.Size(73, 23)
+        Me.txtDischargeDisplay.Size = New System.Drawing.Size(73, 20)
         Me.txtDischargeDisplay.TabIndex = 21
         Me.txtDischargeDisplay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -1114,7 +1172,7 @@
         Me.txtFlowDisplay.MaxLength = 0
         Me.txtFlowDisplay.Name = "txtFlowDisplay"
         Me.txtFlowDisplay.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFlowDisplay.Size = New System.Drawing.Size(73, 23)
+        Me.txtFlowDisplay.Size = New System.Drawing.Size(73, 20)
         Me.txtFlowDisplay.TabIndex = 20
         Me.txtFlowDisplay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -1130,7 +1188,7 @@
         Me.txtTemperatureDisplay.MaxLength = 0
         Me.txtTemperatureDisplay.Name = "txtTemperatureDisplay"
         Me.txtTemperatureDisplay.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTemperatureDisplay.Size = New System.Drawing.Size(73, 23)
+        Me.txtTemperatureDisplay.Size = New System.Drawing.Size(73, 20)
         Me.txtTemperatureDisplay.TabIndex = 19
         Me.txtTemperatureDisplay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -1227,7 +1285,7 @@
         Me.txtAI1.MaxLength = 0
         Me.txtAI1.Name = "txtAI1"
         Me.txtAI1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAI1.Size = New System.Drawing.Size(17, 23)
+        Me.txtAI1.Size = New System.Drawing.Size(17, 20)
         Me.txtAI1.TabIndex = 13
         Me.txtAI1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtAI1.Visible = False
@@ -1243,7 +1301,7 @@
         Me.txtAI2.MaxLength = 0
         Me.txtAI2.Name = "txtAI2"
         Me.txtAI2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAI2.Size = New System.Drawing.Size(17, 23)
+        Me.txtAI2.Size = New System.Drawing.Size(17, 20)
         Me.txtAI2.TabIndex = 12
         Me.txtAI2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtAI2.Visible = False
@@ -1259,7 +1317,7 @@
         Me.txtAI3.MaxLength = 0
         Me.txtAI3.Name = "txtAI3"
         Me.txtAI3.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAI3.Size = New System.Drawing.Size(17, 23)
+        Me.txtAI3.Size = New System.Drawing.Size(17, 20)
         Me.txtAI3.TabIndex = 11
         Me.txtAI3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtAI3.Visible = False
@@ -1275,7 +1333,7 @@
         Me.txtAI4.MaxLength = 0
         Me.txtAI4.Name = "txtAI4"
         Me.txtAI4.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAI4.Size = New System.Drawing.Size(17, 23)
+        Me.txtAI4.Size = New System.Drawing.Size(17, 20)
         Me.txtAI4.TabIndex = 10
         Me.txtAI4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtAI4.Visible = False
@@ -1292,7 +1350,7 @@
         Me.txtAI4Display.MaxLength = 0
         Me.txtAI4Display.Name = "txtAI4Display"
         Me.txtAI4Display.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAI4Display.Size = New System.Drawing.Size(73, 23)
+        Me.txtAI4Display.Size = New System.Drawing.Size(73, 20)
         Me.txtAI4Display.TabIndex = 9
         Me.txtAI4Display.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -1308,7 +1366,7 @@
         Me.txtAI3Display.MaxLength = 0
         Me.txtAI3Display.Name = "txtAI3Display"
         Me.txtAI3Display.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAI3Display.Size = New System.Drawing.Size(73, 23)
+        Me.txtAI3Display.Size = New System.Drawing.Size(73, 20)
         Me.txtAI3Display.TabIndex = 8
         Me.txtAI3Display.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -1324,7 +1382,7 @@
         Me.txtAI2Display.MaxLength = 0
         Me.txtAI2Display.Name = "txtAI2Display"
         Me.txtAI2Display.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAI2Display.Size = New System.Drawing.Size(73, 23)
+        Me.txtAI2Display.Size = New System.Drawing.Size(73, 20)
         Me.txtAI2Display.TabIndex = 7
         Me.txtAI2Display.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -1341,7 +1399,7 @@
         Me.txtAI1Display.Name = "txtAI1Display"
         Me.txtAI1Display.ReadOnly = True
         Me.txtAI1Display.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAI1Display.Size = New System.Drawing.Size(73, 23)
+        Me.txtAI1Display.Size = New System.Drawing.Size(73, 20)
         Me.txtAI1Display.TabIndex = 6
         Me.txtAI1Display.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -1411,7 +1469,7 @@
         Me.cmbPLCLoop.Location = New System.Drawing.Point(120, 40)
         Me.cmbPLCLoop.Name = "cmbPLCLoop"
         Me.cmbPLCLoop.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmbPLCLoop.Size = New System.Drawing.Size(105, 24)
+        Me.cmbPLCLoop.Size = New System.Drawing.Size(105, 22)
         Me.cmbPLCLoop.TabIndex = 4
         '
         'cmdExit
@@ -1439,7 +1497,7 @@
         Me.txtSN.MaxLength = 0
         Me.txtSN.Name = "txtSN"
         Me.txtSN.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtSN.Size = New System.Drawing.Size(105, 23)
+        Me.txtSN.Size = New System.Drawing.Size(105, 20)
         Me.txtSN.TabIndex = 1
         '
         'tmrStartUp
@@ -1457,7 +1515,7 @@
         Me.txtUpdateInterval.MaxLength = 0
         Me.txtUpdateInterval.Name = "txtUpdateInterval"
         Me.txtUpdateInterval.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtUpdateInterval.Size = New System.Drawing.Size(41, 23)
+        Me.txtUpdateInterval.Size = New System.Drawing.Size(41, 20)
         Me.txtUpdateInterval.TabIndex = 0
         Me.txtUpdateInterval.Text = "Text1"
         Me.txtUpdateInterval.Visible = False
@@ -1627,7 +1685,7 @@
         Me.Label49.Location = New System.Drawing.Point(540, 385)
         Me.Label49.Name = "Label49"
         Me.Label49.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label49.Size = New System.Drawing.Size(71, 14)
+        Me.Label49.Size = New System.Drawing.Size(61, 11)
         Me.Label49.TabIndex = 89
         Me.Label49.Text = " % Head "
         '
@@ -1641,7 +1699,7 @@
         Me.Label48.Location = New System.Drawing.Point(324, 396)
         Me.Label48.Name = "Label48"
         Me.Label48.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label48.Size = New System.Drawing.Size(39, 14)
+        Me.Label48.Size = New System.Drawing.Size(33, 11)
         Me.Label48.TabIndex = 88
         Me.Label48.Text = "Suct"
         '
@@ -1655,7 +1713,7 @@
         Me.Label47.Location = New System.Drawing.Point(382, 396)
         Me.Label47.Name = "Label47"
         Me.Label47.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label47.Size = New System.Drawing.Size(39, 14)
+        Me.Label47.Size = New System.Drawing.Size(33, 11)
         Me.Label47.TabIndex = 87
         Me.Label47.Text = "Disc"
         '
@@ -1669,7 +1727,7 @@
         Me.Label46.Location = New System.Drawing.Point(445, 385)
         Me.Label46.Name = "Label46"
         Me.Label46.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label46.Size = New System.Drawing.Size(31, 14)
+        Me.Label46.Size = New System.Drawing.Size(26, 11)
         Me.Label46.TabIndex = 86
         Me.Label46.Text = "TDH"
         '
@@ -1683,7 +1741,7 @@
         Me.Label45.Location = New System.Drawing.Point(489, 385)
         Me.Label45.Name = "Label45"
         Me.Label45.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label45.Size = New System.Drawing.Size(47, 14)
+        Me.Label45.Size = New System.Drawing.Size(40, 11)
         Me.Label45.TabIndex = 85
         Me.Label45.Text = "NPSHa"
         '
@@ -1832,7 +1890,7 @@
         Me.Label34.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label34.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label34.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label34.Location = New System.Drawing.Point(760, 192)
+        Me.Label34.Location = New System.Drawing.Point(767, 198)
         Me.Label34.Name = "Label34"
         Me.Label34.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label34.Size = New System.Drawing.Size(80, 21)
@@ -1919,7 +1977,7 @@
         Me.Label24.Location = New System.Drawing.Point(267, 375)
         Me.Label24.Name = "Label24"
         Me.Label24.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label24.Size = New System.Drawing.Size(63, 14)
+        Me.Label24.Size = New System.Drawing.Size(54, 11)
         Me.Label24.TabIndex = 53
         Me.Label24.Text = "Temp   "
         '
@@ -1933,7 +1991,7 @@
         Me.Label23.Location = New System.Drawing.Point(211, 375)
         Me.Label23.Name = "Label23"
         Me.Label23.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label23.Size = New System.Drawing.Size(47, 14)
+        Me.Label23.Size = New System.Drawing.Size(40, 11)
         Me.Label23.TabIndex = 52
         Me.Label23.Text = "Disch"
         '
@@ -1947,7 +2005,7 @@
         Me.Label22.Location = New System.Drawing.Point(154, 375)
         Me.Label22.Name = "Label22"
         Me.Label22.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label22.Size = New System.Drawing.Size(39, 14)
+        Me.Label22.Size = New System.Drawing.Size(33, 11)
         Me.Label22.TabIndex = 51
         Me.Label22.Text = "Suct"
         '
@@ -1961,7 +2019,7 @@
         Me.Label21.Location = New System.Drawing.Point(101, 385)
         Me.Label21.Name = "Label21"
         Me.Label21.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label21.Size = New System.Drawing.Size(63, 14)
+        Me.Label21.Size = New System.Drawing.Size(54, 11)
         Me.Label21.TabIndex = 50
         Me.Label21.Text = "Flow   "
         '
@@ -1975,7 +2033,7 @@
         Me.Label20.Location = New System.Drawing.Point(16, 385)
         Me.Label20.Name = "Label20"
         Me.Label20.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label20.Size = New System.Drawing.Size(79, 14)
+        Me.Label20.Size = New System.Drawing.Size(68, 11)
         Me.Label20.TabIndex = 49
         Me.Label20.Text = "Time     "
         '
@@ -2055,7 +2113,7 @@
         Me.Label15.Location = New System.Drawing.Point(154, 396)
         Me.Label15.Name = "Label15"
         Me.Label15.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label15.Size = New System.Drawing.Size(63, 14)
+        Me.Label15.Size = New System.Drawing.Size(54, 11)
         Me.Label15.TabIndex = 116
         Me.Label15.Text = "Press  "
         '
@@ -2069,7 +2127,7 @@
         Me.Label16.Location = New System.Drawing.Point(211, 396)
         Me.Label16.Name = "Label16"
         Me.Label16.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label16.Size = New System.Drawing.Size(63, 14)
+        Me.Label16.Size = New System.Drawing.Size(54, 11)
         Me.Label16.TabIndex = 117
         Me.Label16.Text = "Press  "
         '
@@ -2083,16 +2141,319 @@
         Me.Label17.Location = New System.Drawing.Point(324, 375)
         Me.Label17.Name = "Label17"
         Me.Label17.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label17.Size = New System.Drawing.Size(103, 14)
+        Me.Label17.Size = New System.Drawing.Size(89, 11)
         Me.Label17.TabIndex = 118
         Me.Label17.Text = "Velocity Hd "
         '
+        'OpenFileDialog2
+        '
+        Me.OpenFileDialog2.FileName = "OpenFileDialog2"
+        '
+        'ListBox1
+        '
+        Me.ListBox1.Font = New System.Drawing.Font("Arial", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ListBox1.ForeColor = System.Drawing.Color.Red
+        Me.ListBox1.FormattingEnabled = True
+        Me.ListBox1.ItemHeight = 16
+        Me.ListBox1.Location = New System.Drawing.Point(961, 30)
+        Me.ListBox1.Name = "ListBox1"
+        Me.ListBox1.ScrollAlwaysVisible = True
+        Me.ListBox1.Size = New System.Drawing.Size(413, 84)
+        Me.ListBox1.TabIndex = 119
+        Me.ListBox1.Visible = False
+        '
+        'lblListBox
+        '
+        Me.lblListBox.AutoSize = True
+        Me.lblListBox.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblListBox.ForeColor = System.Drawing.Color.Red
+        Me.lblListBox.Location = New System.Drawing.Point(1100, 7)
+        Me.lblListBox.Name = "lblListBox"
+        Me.lblListBox.Size = New System.Drawing.Size(131, 18)
+        Me.lblListBox.TabIndex = 120
+        Me.lblListBox.Text = "Select Worksheet"
+        Me.lblListBox.Visible = False
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.Controls.Add(Me.lblDesignTDH)
+        Me.GroupBox1.Controls.Add(Me.Label64)
+        Me.GroupBox1.Controls.Add(Me.lblRPM)
+        Me.GroupBox1.Controls.Add(Me.lblFrequency)
+        Me.GroupBox1.Controls.Add(Me.lblVoltage)
+        Me.GroupBox1.Controls.Add(Me.Label66)
+        Me.GroupBox1.Controls.Add(Me.Label67)
+        Me.GroupBox1.Controls.Add(Me.Label68)
+        Me.GroupBox1.Controls.Add(Me.lblMounting)
+        Me.GroupBox1.Controls.Add(Me.lblCircPath)
+        Me.GroupBox1.Controls.Add(Me.lblImpDia)
+        Me.GroupBox1.Controls.Add(Me.lblNPSHa)
+        Me.GroupBox1.Controls.Add(Me.lblNPSHr)
+        Me.GroupBox1.Controls.Add(Me.lblDesignFlow)
+        Me.GroupBox1.Controls.Add(Me.Label61)
+        Me.GroupBox1.Controls.Add(Me.Label62)
+        Me.GroupBox1.Controls.Add(Me.Label59)
+        Me.GroupBox1.Controls.Add(Me.Label60)
+        Me.GroupBox1.Controls.Add(Me.Label58)
+        Me.GroupBox1.Controls.Add(Me.Label57)
+        Me.GroupBox1.Controls.Add(Me.lblSalesOrder)
+        Me.GroupBox1.Controls.Add(Me.lblModelNumber)
+        Me.GroupBox1.Controls.Add(Me.lblCustomer)
+        Me.GroupBox1.Controls.Add(Me.Label53)
+        Me.GroupBox1.Controls.Add(Me.Label51)
+        Me.GroupBox1.Controls.Add(Me.Label50)
+        Me.GroupBox1.Location = New System.Drawing.Point(1070, 143)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(569, 153)
+        Me.GroupBox1.TabIndex = 123
+        Me.GroupBox1.TabStop = False
+        Me.GroupBox1.Text = "Pump Info"
+        '
+        'lblRPM
+        '
+        Me.lblRPM.AutoSize = True
+        Me.lblRPM.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRPM.Location = New System.Drawing.Point(516, 55)
+        Me.lblRPM.Name = "lblRPM"
+        Me.lblRPM.Size = New System.Drawing.Size(0, 15)
+        Me.lblRPM.TabIndex = 23
+        '
+        'lblFrequency
+        '
+        Me.lblFrequency.AutoSize = True
+        Me.lblFrequency.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblFrequency.Location = New System.Drawing.Point(516, 38)
+        Me.lblFrequency.Name = "lblFrequency"
+        Me.lblFrequency.Size = New System.Drawing.Size(0, 15)
+        Me.lblFrequency.TabIndex = 22
+        '
+        'lblVoltage
+        '
+        Me.lblVoltage.AutoSize = True
+        Me.lblVoltage.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblVoltage.Location = New System.Drawing.Point(516, 20)
+        Me.lblVoltage.Name = "lblVoltage"
+        Me.lblVoltage.Size = New System.Drawing.Size(0, 15)
+        Me.lblVoltage.TabIndex = 21
+        '
+        'Label66
+        '
+        Me.Label66.AutoSize = True
+        Me.Label66.Location = New System.Drawing.Point(466, 55)
+        Me.Label66.Name = "Label66"
+        Me.Label66.Size = New System.Drawing.Size(34, 14)
+        Me.Label66.TabIndex = 20
+        Me.Label66.Text = "RPM::"
+        '
+        'Label67
+        '
+        Me.Label67.AutoSize = True
+        Me.Label67.Location = New System.Drawing.Point(440, 38)
+        Me.Label67.Name = "Label67"
+        Me.Label67.Size = New System.Drawing.Size(62, 14)
+        Me.Label67.TabIndex = 19
+        Me.Label67.Text = "Frequency:"
+        '
+        'Label68
+        '
+        Me.Label68.AutoSize = True
+        Me.Label68.Location = New System.Drawing.Point(456, 20)
+        Me.Label68.Name = "Label68"
+        Me.Label68.Size = New System.Drawing.Size(46, 14)
+        Me.Label68.TabIndex = 18
+        Me.Label68.Text = "Voltage:"
+        '
+        'lblMounting
+        '
+        Me.lblMounting.AutoSize = True
+        Me.lblMounting.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblMounting.Location = New System.Drawing.Point(377, 92)
+        Me.lblMounting.Name = "lblMounting"
+        Me.lblMounting.Size = New System.Drawing.Size(0, 15)
+        Me.lblMounting.TabIndex = 17
+        '
+        'lblCircPath
+        '
+        Me.lblCircPath.AutoSize = True
+        Me.lblCircPath.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCircPath.Location = New System.Drawing.Point(377, 74)
+        Me.lblCircPath.Name = "lblCircPath"
+        Me.lblCircPath.Size = New System.Drawing.Size(0, 15)
+        Me.lblCircPath.TabIndex = 16
+        '
+        'lblImpDia
+        '
+        Me.lblImpDia.AutoSize = True
+        Me.lblImpDia.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblImpDia.Location = New System.Drawing.Point(377, 56)
+        Me.lblImpDia.Name = "lblImpDia"
+        Me.lblImpDia.Size = New System.Drawing.Size(0, 15)
+        Me.lblImpDia.TabIndex = 15
+        '
+        'lblNPSHa
+        '
+        Me.lblNPSHa.AutoSize = True
+        Me.lblNPSHa.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblNPSHa.Location = New System.Drawing.Point(377, 38)
+        Me.lblNPSHa.Name = "lblNPSHa"
+        Me.lblNPSHa.Size = New System.Drawing.Size(0, 15)
+        Me.lblNPSHa.TabIndex = 14
+        '
+        'lblNPSHr
+        '
+        Me.lblNPSHr.AutoSize = True
+        Me.lblNPSHr.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblNPSHr.Location = New System.Drawing.Point(377, 20)
+        Me.lblNPSHr.Name = "lblNPSHr"
+        Me.lblNPSHr.Size = New System.Drawing.Size(0, 15)
+        Me.lblNPSHr.TabIndex = 13
+        '
+        'lblDesignFlow
+        '
+        Me.lblDesignFlow.AutoSize = True
+        Me.lblDesignFlow.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDesignFlow.Location = New System.Drawing.Point(95, 75)
+        Me.lblDesignFlow.Name = "lblDesignFlow"
+        Me.lblDesignFlow.Size = New System.Drawing.Size(0, 15)
+        Me.lblDesignFlow.TabIndex = 12
+        '
+        'Label61
+        '
+        Me.Label61.AutoSize = True
+        Me.Label61.Location = New System.Drawing.Point(313, 92)
+        Me.Label61.Name = "Label61"
+        Me.Label61.Size = New System.Drawing.Size(53, 14)
+        Me.Label61.TabIndex = 11
+        Me.Label61.Text = "Mounting:"
+        '
+        'Label62
+        '
+        Me.Label62.AutoSize = True
+        Me.Label62.Location = New System.Drawing.Point(313, 74)
+        Me.Label62.Name = "Label62"
+        Me.Label62.Size = New System.Drawing.Size(53, 14)
+        Me.Label62.TabIndex = 10
+        Me.Label62.Text = "Circ Path:"
+        '
+        'Label59
+        '
+        Me.Label59.AutoSize = True
+        Me.Label59.Location = New System.Drawing.Point(302, 56)
+        Me.Label59.Name = "Label59"
+        Me.Label59.Size = New System.Drawing.Size(64, 14)
+        Me.Label59.TabIndex = 9
+        Me.Label59.Text = "Impeller Dia:"
+        '
+        'Label60
+        '
+        Me.Label60.AutoSize = True
+        Me.Label60.Location = New System.Drawing.Point(323, 38)
+        Me.Label60.Name = "Label60"
+        Me.Label60.Size = New System.Drawing.Size(43, 14)
+        Me.Label60.TabIndex = 8
+        Me.Label60.Text = "NPSHa:"
+        '
+        'Label58
+        '
+        Me.Label58.AutoSize = True
+        Me.Label58.Location = New System.Drawing.Point(325, 20)
+        Me.Label58.Name = "Label58"
+        Me.Label58.Size = New System.Drawing.Size(41, 14)
+        Me.Label58.TabIndex = 7
+        Me.Label58.Text = "NPSHr:"
+        '
+        'Label57
+        '
+        Me.Label57.AutoSize = True
+        Me.Label57.Location = New System.Drawing.Point(14, 75)
+        Me.Label57.Name = "Label57"
+        Me.Label57.Size = New System.Drawing.Size(70, 14)
+        Me.Label57.TabIndex = 6
+        Me.Label57.Text = "Design Flow:"
+        '
+        'lblSalesOrder
+        '
+        Me.lblSalesOrder.AutoSize = True
+        Me.lblSalesOrder.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblSalesOrder.Location = New System.Drawing.Point(90, 55)
+        Me.lblSalesOrder.Name = "lblSalesOrder"
+        Me.lblSalesOrder.Size = New System.Drawing.Size(0, 15)
+        Me.lblSalesOrder.TabIndex = 5
+        '
+        'lblModelNumber
+        '
+        Me.lblModelNumber.AutoSize = True
+        Me.lblModelNumber.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblModelNumber.Location = New System.Drawing.Point(90, 38)
+        Me.lblModelNumber.Name = "lblModelNumber"
+        Me.lblModelNumber.Size = New System.Drawing.Size(0, 15)
+        Me.lblModelNumber.TabIndex = 4
+        '
+        'lblCustomer
+        '
+        Me.lblCustomer.AutoSize = True
+        Me.lblCustomer.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCustomer.Location = New System.Drawing.Point(90, 20)
+        Me.lblCustomer.Name = "lblCustomer"
+        Me.lblCustomer.Size = New System.Drawing.Size(0, 15)
+        Me.lblCustomer.TabIndex = 3
+        '
+        'Label53
+        '
+        Me.Label53.AutoSize = True
+        Me.Label53.Location = New System.Drawing.Point(16, 55)
+        Me.Label53.Name = "Label53"
+        Me.Label53.Size = New System.Drawing.Size(68, 14)
+        Me.Label53.TabIndex = 2
+        Me.Label53.Text = "Sales Order:"
+        '
+        'Label51
+        '
+        Me.Label51.AutoSize = True
+        Me.Label51.Location = New System.Drawing.Point(6, 38)
+        Me.Label51.Name = "Label51"
+        Me.Label51.Size = New System.Drawing.Size(78, 14)
+        Me.Label51.TabIndex = 1
+        Me.Label51.Text = "Model Number:"
+        '
+        'Label50
+        '
+        Me.Label50.AutoSize = True
+        Me.Label50.Location = New System.Drawing.Point(25, 20)
+        Me.Label50.Name = "Label50"
+        Me.Label50.Size = New System.Drawing.Size(59, 14)
+        Me.Label50.TabIndex = 0
+        Me.Label50.Text = "Customer: "
+        '
+        'lblDesignTDH
+        '
+        Me.lblDesignTDH.AutoSize = True
+        Me.lblDesignTDH.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDesignTDH.Location = New System.Drawing.Point(95, 93)
+        Me.lblDesignTDH.Name = "lblDesignTDH"
+        Me.lblDesignTDH.Size = New System.Drawing.Size(0, 15)
+        Me.lblDesignTDH.TabIndex = 25
+        '
+        'Label64
+        '
+        Me.Label64.AutoSize = True
+        Me.Label64.Location = New System.Drawing.Point(14, 93)
+        Me.Label64.Name = "Label64"
+        Me.Label64.Size = New System.Drawing.Size(66, 14)
+        Me.Label64.TabIndex = 24
+        Me.Label64.Text = "Design TDH:"
+        '
         'frmPLCData
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 14.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1691, 885)
+        Me.Controls.Add(Me.GroupBox1)
+        Me.Controls.Add(Me.lbldatarow)
+        Me.Controls.Add(Me.lblInputData)
+        Me.Controls.Add(Me.lblListBox)
+        Me.Controls.Add(Me.ListBox1)
         Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.Label16)
         Me.Controls.Add(Me.Label15)
@@ -2189,6 +2550,8 @@
         Me.Frame3.ResumeLayout(False)
         Me.Frame3.PerformLayout()
         CType(Me.Chart1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2200,5 +2563,37 @@
     Public WithEvents Label15 As Label
     Public WithEvents Label16 As Label
     Public WithEvents Label17 As Label
+    Friend WithEvents OpenFileDialog2 As OpenFileDialog
+    Friend WithEvents ListBox1 As ListBox
+    Friend WithEvents lblListBox As Label
+    Friend WithEvents lblInputData As Label
+    Friend WithEvents lbldatarow As Label
+    Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents Label66 As Label
+    Friend WithEvents Label67 As Label
+    Friend WithEvents Label68 As Label
+    Friend WithEvents Label61 As Label
+    Friend WithEvents Label62 As Label
+    Friend WithEvents Label59 As Label
+    Friend WithEvents Label60 As Label
+    Friend WithEvents Label58 As Label
+    Friend WithEvents Label57 As Label
+    Friend WithEvents Label53 As Label
+    Friend WithEvents Label51 As Label
+    Friend WithEvents Label50 As Label
+    Friend WithEvents lblRPM As Label
+    Friend WithEvents lblFrequency As Label
+    Friend WithEvents lblVoltage As Label
+    Friend WithEvents lblMounting As Label
+    Friend WithEvents lblCircPath As Label
+    Friend WithEvents lblImpDia As Label
+    Friend WithEvents lblNPSHa As Label
+    Friend WithEvents lblNPSHr As Label
+    Friend WithEvents lblDesignFlow As Label
+    Friend WithEvents lblSalesOrder As Label
+    Friend WithEvents lblModelNumber As Label
+    Friend WithEvents lblCustomer As Label
+    Friend WithEvents lblDesignTDH As Label
+    Friend WithEvents Label64 As Label
 #End Region
 End Class

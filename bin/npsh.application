@@ -14,14 +14,14 @@
     <framework targetVersion="4.6.1" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="npsh.exe.manifest" size="13595">
+    <dependentAssembly dependencyType="install" codebase="npsh.exe.manifest" size="14662">
       <assemblyIdentity name="npsh.exe" version="2.0.1.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="x86" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>1E7ZXZOqNCoaPi21SydZtpIvl8BSSMicJ+5I3OvElGI=</dsig:DigestValue>
+        <dsig:DigestValue>ASJVlMPLz7R5F6X1Jd/n6r23WFz4AODWV9YG+vI2VA8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

@@ -1,6 +1,8 @@
 Option Strict Off
 Option Explicit On
 'Imports VB = Microsoft.VisualBasic
+Imports System.Collections.Generic
+Imports System.Data.OleDb
 Imports Microsoft.Office.Interop.Excel
 'Imports Microsoft.VisualBasic.PowerPacks
 'Imports System
@@ -79,7 +81,13 @@ Friend Class frmPLCData
     '   version 2.0.1 - MHR - 12/5/18
     '   general cleanup 
 
-
+    '   version 2.0.2 - MHR - 5/20/20
+    '   allow for previous excel file data as inputs for testing
+    '   embed chart in worksheet instead of separate chart sheet
+    '   use template for new sheet located on server in Databases directory
+    '   substituted formula for %head = TDH / Starting TDH
+    '   added NPSHr numbers on each worksheet
+    '   added pump data retrieve from PumpData database and show on fromt panel
 
     'variables
     Private IsInitializing As Boolean
@@ -104,6 +112,37 @@ Friend Class frmPLCData
     Dim FoundPLC As Boolean 'Communicating with a PLC
     Dim FirstRun As Boolean 'First time that we calc data
     Dim DeltaSuctionPressure As Single 'Average change in suction pressure over the last 5 secs
+
+    Dim inputExcelProcessid As Integer = 0
+    Dim outputExcelProcessID As Integer = 0
+    Dim inputFileName As String = String.Empty
+    Dim inputWorkbook As Workbook
+    Dim xlInputApp As Application
+
+    Structure InputData     'structure for input data from excel sheet
+        Dim Flow As Single
+        Dim SuctPress As Single
+        Dim DischPress As Single
+        Dim Temp As Single
+        Dim ValvePosition As Integer
+    End Structure
+
+    Structure PumpData
+        Dim SerialNumber As String
+        Dim SuctGaugeHeight As String
+        Dim DischGaugeHeight As String
+        Dim SuctPipeDia As String
+        Dim DischPipeDia As String
+        Dim StartingFlow As String
+        Dim StartingTDH As String
+        Dim BP As String
+    End Structure
+    Dim pd As PumpData
+
+    Dim lstExcelInput As List(Of InputData) 'list of inputdata structure
+    Dim rowExcelInput As Integer    'current row
+    Dim blnListDone As Boolean = True        'we're done inputting the list of structures
+    Dim blnUsingExcelInput As Boolean = False
 
     Dim Debugging As Integer
 
@@ -136,6 +175,43 @@ Friend Class frmPLCData
         End If
     End Sub
 
+    Private Sub getExcelInputData()
+        With OpenFileDialog2
+            .CheckFileExists = True
+            .Filter = "Excel Files|*.xls;*.xlsx"
+            .InitialDirectory = "\\tei-main-01\F\EN\GROUPS\SHARED\Calibration and Rundown\NPSH\"
+            Dim result As DialogResult = .ShowDialog
+            If result = DialogResult.OK Then
+                rowExcelInput = 12  'starting row for data
+                lstExcelInput = New List(Of InputData)
+                blnListDone = False
+                inputFileName = .FileName
+            Else
+                blnUsingExcelInput = False
+                Exit Sub
+            End If
+        End With
+
+        xlInputApp = New Application
+        Dim xlProc = Process.GetProcessesByName("Excel")
+        inputExcelProcessid = xlProc(0).id
+
+        'open the excel file and read data into list
+
+        inputWorkbook = xlInputApp.Workbooks.Open(inputFileName)
+        ' get the worksheet tab names
+
+        ListBox1.Visible = True
+        lblListBox.Visible = True
+        ListBox1.Items.Clear()
+
+        For Each w As Worksheet In xlInputApp.Worksheets
+            w.Activate()
+            ListBox1.Items.Add(w.Name & " -- Number of Rows = " & (w.UsedRange.Rows.Count - 11).ToString)
+        Next
+
+
+    End Sub
     Private Sub cmbPLCLoop_SelectedIndexChanged(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles cmbPLCLoop.SelectedIndexChanged
 
         If IsInitializing Then
@@ -143,6 +219,21 @@ Friend Class frmPLCData
         End If
 
         'Change the PLC that we're looking at
+
+
+        'see if it's excel sheet
+        If cmbPLCLoop.SelectedItem = "Use Excel Sheet" Then
+            'get excel sheet and read columns into list
+            'need globals:
+            '   lstExcelInput
+            '   rowExcelInput
+            '   blnListDone
+            'maybe want to show number of readings for each tab?
+            '    lstExcelInput
+            'in tmrgetdde, read out from list into values
+            getExcelInputData()
+        End If
+
 
         For Each p As PLCCommLibrary.PLCComm.PLCStruct In PLCList
             If cmbPLCLoop.SelectedItem = p.PLCName Then
@@ -211,8 +302,18 @@ Friend Class frmPLCData
 
     Private Sub cmdExit_Click(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles cmdExit.Click
         ' Close 
-        xlApp.Quit()
+        Try
+            xlApp.Quit()
+        Catch ex As Exception
 
+        End Try
+
+        'kill excel input process 
+
+        Dim xlProc = Process.GetProcessesByName("Excel")
+        For Each p As Process In xlProc
+            p.Kill()
+        Next
         xlApp = Nothing
         End ' we're finished, exit
     End Sub
@@ -221,11 +322,17 @@ Friend Class frmPLCData
         Dim Answer As Object
 
         If cmdSaveData.Text = "Save Data" Then
+
+            ' Create the Excel App Object so we can store our data
+            xlApp = CreateObject("Excel.Application")
+            Dim xlProc = Process.GetProcessesByName("Excel")
+            outputExcelProcessID = xlProc(0).id
+
             Dim MyResult As DialogResult
 
             'set up dialog box
             OpenFileDialog1.Title = "Open Excel Files"
-            OpenFileDialog1.Filter = "Excel Files |*.xls" 'show Excel files
+            OpenFileDialog1.Filter = "Excel Files |*.xls*" 'show Excel files
             OpenFileDialog1.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) 'in this directory
             OpenFileDialog1.CheckFileExists = False
 
@@ -244,9 +351,9 @@ Friend Class frmPLCData
                 ' Create the Excel Workbook Object.
                 On Error GoTo 0
                 xlBook = xlApp.Workbooks.Add 'add a workbook
-                NewWorkBook() 'do some stuff for the new workbook
+                NewWorkBook(SaveFileName) 'do some stuff for the new workbook
                 xlApp.ActiveWorkbook.CheckCompatibility = False
-                xlApp.ActiveWorkbook.SaveAs(Filename:=SaveFileName, FileFormat:=XlWindowState.xlNormal) 'save the file
+                'xlApp.ActiveWorkbook.SaveAs(Filename:=SaveFileName, FileFormat:=XlWindowState.xlNormal) 'save the file
                 MsgBox(OpenFileDialog1.FileName & " has been opened for writing.", MsgBoxStyle.OkOnly, "File Opened") 'tell the user that file is open
             Else 'the file name already exists
                 SaveFileName = OpenFileDialog1.FileName
@@ -305,7 +412,7 @@ ErrHandler:
 
         cmdCalibrate.Visible = False
 
-        If CDbl(txtFlow.Text) = 0 Then
+        If CDbl(txtFlow.Text) = 0 And cmdStartTest.Text = "Start Test" Then
             ans = MsgBox("The flow is 0, do you want to use the Constant Flow Box?", MsgBoxStyle.YesNo, "Flow is 0")
             If ans = MsgBoxResult.Yes Then
                 chkConstantFlow.CheckState = System.Windows.Forms.CheckState.Checked
@@ -335,6 +442,8 @@ ErrHandler:
             vPlot1(i, 0) = NPSHa 'current calculated data
             vPlot1(i, 1) = TDH
         Next i
+
+        rowExcelInput = 0
 
         problem = False 'did the user fill all of the fields required?
 
@@ -382,8 +491,14 @@ ErrHandler:
         'CWGraph2.Axes.Item(2).Minimum = 90   'set tdh from -25
         'CWGraph2.Axes.Item(2).Maximum = 102  '  to 25 over the tdh
 
+        If blnUsingExcelInput Then
+            txtFlowForCalcs.Text = pd.StartingFlow
+            txtAveTDH.Text = pd.StartingTDH
+            txtInHgDisplay.Text = pd.BP
+        Else
+            txtFlowForCalcs.Text = txtFlowDisplay.Text 'save the curent flow in flowforcalcs
+        End If
 
-        txtFlowForCalcs.Text = txtFlowDisplay.Text 'save the curent flow in flowforcalcs
 
         TestStarted = True 'say the test has been started
 
@@ -472,14 +587,19 @@ GotName:
 
             PLCCm.SortPLCList(PLCList)
 
-            If PLCList.Count = 0 Then
-                MsgBox("No PLCs found. . . ", vbOKOnly, "No PLCs Found")
-                End
+            'If PLCList.Count = 0 Then
+            '    MsgBox("No PLCs found. . . ", vbOKOnly, "No PLCs Found")
+            '    End
+            'End If
+
+            If PLCList.Count > 0 Then
+                For Each p As PLCCommLibrary.PLCComm.PLCStruct In PLCList
+                    cmbPLCLoop.Items.Add(p.PLCName)
+                Next
             End If
 
-            For Each p As PLCCommLibrary.PLCComm.PLCStruct In PLCList
-                cmbPLCLoop.Items.Add(p.PLCName)
-            Next
+            'add use excel sheet to end of list
+            cmbPLCLoop.Items.Add("Use Excel Sheet")
 
             Dim DeviceCount As Integer
 
@@ -538,8 +658,10 @@ GotName:
 
         End If
 
-        ' Create the Excel App Object so we can store our data
-        xlApp = CreateObject("Excel.Application")
+        '' Create the Excel App Object so we can store our data
+        'xlApp = CreateObject("Excel.Application")
+        'Dim xlProc = Process.GetProcessesByName("Excel")
+        'outputExcelProcessID = xlProc(0).id
 
     End Sub
 
@@ -559,34 +681,65 @@ GotName:
 
 
         If Not Calibrating Then
-            'get here to format the data that we got from the plc
-            '  and do the npsh and tdh calculations
+            If blnUsingExcelInput And blnListDone = False Then
+                'getting data from excel sheet
+                'get data from lstexcelinput
+                Dim datastruct As InputData = New InputData
+                datastruct = lstExcelInput(rowExcelInput)
+                Me.txtFlow.Text = datastruct.Flow
+                Me.txtSuction.Text = datastruct.SuctPress           'input for both pressures in PSIA
+                Me.txtDischarge.Text = datastruct.DischPress        '   "
+                Me.txtTemperature.Text = datastruct.Temp
+                Me.txtValvePosition.Text = datastruct.ValvePosition
+                Me.txtInHgDisplay.Text = pd.BP
+                SuctionPSIA = datastruct.SuctPress
+                DischargePSIA = datastruct.DischPress
 
-            Me.shpGetPLCData.Visible = True 'turn the PLC led on
-
-            'the following data are type real
-            If chkConstantFlow.CheckState = 0 Then
-                txtFlow.Text = CStr(PLCCm.ConvertToReal("4050"))
+                Me.lbldatarow.Visible = True
+                Me.lbldatarow.Text = "At Data Point " & rowExcelInput.ToString & " of " & lstExcelInput.Count.ToString & " Data Points"
+                rowExcelInput += 1
+                If rowExcelInput >= lstExcelInput.Count Then
+                    'stop input data
+                    blnListDone = True
+                    Me.lbldatarow.Text = "No More Data Input"
+                    cmdStartTest_Click(cmdStartTest, New System.EventArgs())
+                End If
             Else
-                txtFlow.Text = CStr(Val(txtConstantFlow.Text))
+                'get here to format the data that we got from the plc
+                '  and do the npsh and tdh calculations
+
+                Me.shpGetPLCData.Visible = True 'turn the PLC led on
+
+                Me.txtInHg.Text = CStr(PLCCm.ConvertToLong("1460"))
+
+                'the following data are type real
+                If chkConstantFlow.CheckState = 0 Then
+                    txtFlow.Text = CStr(PLCCm.ConvertToReal("4050"))
+                Else
+                    txtFlow.Text = CStr(Val(txtConstantFlow.Text))
+                End If
+
+                'all pressures from PLC  are in psig, so convert to psia
+                Dim Conversion = CDbl(txtInHg.Text) * 0.491 / 100
+
+                txtSuction.Text = CStr(PLCCm.ConvertToReal("4052") / 10) + Conversion
+                txtDischarge.Text = CStr(PLCCm.ConvertToReal("4054")) + Conversion
+                txtTemperature.Text = CStr(PLCCm.ConvertToReal("4056"))
+                '
+                '    'the following data are not type real
+                txtValvePosition.Text = CStr(PLCCm.ConvertToLong("2004"))
+                Me.txtTC1.Text = CStr(PLCCm.ConvertToLong("2200") / 10)
+                Me.txtTC2.Text = CStr(PLCCm.ConvertToLong("2202") / 10)
+                Me.txtTC3.Text = CStr(PLCCm.ConvertToLong("2204") / 10)
+                Me.txtTC4.Text = CStr(PLCCm.ConvertToLong("2206") / 10)
+
+                Me.txtAI1.Text = CStr(PLCCm.ConvertToReal("4060"))
+                Me.txtAI2.Text = CStr(PLCCm.ConvertToReal("4062"))
+                Me.txtAI3.Text = CStr(PLCCm.ConvertToReal("4064"))
+                Me.txtAI4.Text = CStr(PLCCm.ConvertToReal("4066"))
+
+
             End If
-            txtSuction.Text = CStr(PLCCm.ConvertToReal("4052") / 10)
-            txtDischarge.Text = CStr(PLCCm.ConvertToReal("4054"))
-            txtTemperature.Text = CStr(PLCCm.ConvertToReal("4056"))
-            '
-            '    'the following data are not type real
-            txtValvePosition.Text = CStr(PLCCm.ConvertToLong("2004"))
-            Me.txtTC1.Text = CStr(PLCCm.ConvertToLong("2200") / 10)
-            Me.txtTC2.Text = CStr(PLCCm.ConvertToLong("2202") / 10)
-            Me.txtTC3.Text = CStr(PLCCm.ConvertToLong("2204") / 10)
-            Me.txtTC4.Text = CStr(PLCCm.ConvertToLong("2206") / 10)
-
-            Me.txtAI1.Text = CStr(PLCCm.ConvertToReal("4060"))
-            Me.txtAI2.Text = CStr(PLCCm.ConvertToReal("4062"))
-            Me.txtAI3.Text = CStr(PLCCm.ConvertToReal("4064"))
-            Me.txtAI4.Text = CStr(PLCCm.ConvertToReal("4066"))
-
-            Me.txtInHg.Text = CStr(PLCCm.ConvertToLong("1460"))
         End If
 
         If Calibrating And UseDataset.Flow = 0 Then
@@ -689,20 +842,20 @@ GotName:
         End If
         txtDischVelHead.Text = Format(DischVelHead, "0.00")
 
-        'convert gauges to absolute
-        Conversion_Renamed = CDbl(txtInHg.Text) * 0.491 / 100
+        ''convert gauges to absolute
+        'Conversion_Renamed = CDbl(txtInHg.Text) * 0.491 / 100
 
-        'data from plc is in gage
-        SuctionPSIA = Val(txtSuctionDisplay.Text) + Conversion_Renamed
-        'txtSuctionDisplay.Text = Format(Val(SuctionPSIA), "##00.00")
+        ''data from plc is in gage
+        'SuctionPSIA = Val(txtSuctionDisplay.Text) '+ Conversion_Renamed
+        ''txtSuctionDisplay.Text = Format(Val(SuctionPSIA), "##00.00")
 
-        If RadioButtonGauge.Checked = True Then 'gauge
-            DischargePSIA = Val(txtDischargeDisplay.Text) + Conversion_Renamed
-        Else 'absolute
-            DischargePSIA = Val(txtDischargeDisplay.Text)
-        End If
+        ''If RadioButtonGauge.Checked = True Then 'gauge
+        ''    DischargePSIA = Val(txtDischargeDisplay.Text) + Conversion_Renamed
+        ''Else 'absolute
+        'DischargePSIA = Val(txtDischargeDisplay.Text)
+        ''End If
 
-        txtDischargeDisplay.Text = Format(Val(DischargePSIA), "##00.00") 'show the value
+        'txtDischargeDisplay.Text = Format(Val(DischargePSIA), "##00.00") 'show the value
 
         'lookup vapor pressure and specific volume in the arrays that we made
         'if temp is out of range, say so and exit
@@ -790,8 +943,10 @@ GotName:
                 .Range("L" & Format(ExcelRow)).Select()
                 .ActiveCell.FormulaR1C1 = Format(TDH, "000.00")
 
+                Dim pctHead As String = "=L" & Format(ExcelRow) & "/$C$2"
                 .Range("M" & Format(ExcelRow)).Select()
-                .ActiveCell.FormulaR1C1 = Format(Val(txtPctHead.Text) / 100, "0.00")
+                .ActiveCell.Formula = pctHead
+                .ActiveCell.NumberFormat = "#00.00%"
 
                 ExcelRow = ExcelRow + 1
             End With
@@ -885,104 +1040,43 @@ GotName:
 
         'write the header to the file
         With xlApp
-            .Range("A1").Select()
-            .ActiveCell.FormulaR1C1 = "Serial Number - " & txtSN.Text
+            .Range("C1").Select()
+            .ActiveCell.FormulaR1C1 = txtSN.Text
 
-            .Range("E1").Select()
-            .ActiveCell.FormulaR1C1 = "Date - " & Today
+            .Range("H1").Select()
+            .ActiveCell.FormulaR1C1 = Today
 
-            .Range("A2").Select()
-            .ActiveCell.FormulaR1C1 = "Starting TDH = " & txtAveTDH.Text
+            .Range("C2").Select()
+            .ActiveCell.FormulaR1C1 = txtAveTDH.Text
 
-            .Range("E2").Select()
-            .ActiveCell.FormulaR1C1 = "Barometric Pressure = " & txtInHgDisplay.Text
+            .Range("H2").Select()
+            .ActiveCell.FormulaR1C1 = txtInHgDisplay.Text
 
-            .Range("A3").Select()
-            .ActiveCell.FormulaR1C1 = "Starting Flow = " & txtFlowForCalcs.Text
+            .Range("C3").Select()
+            .ActiveCell.FormulaR1C1 = txtFlowForCalcs.Text
 
-            .Range("E3").Select()
-            .ActiveCell.FormulaR1C1 = "Suction Gauge Height = " & txtSuctGaugeHeight.Text
+            .Range("H3").Select()
+            .ActiveCell.FormulaR1C1 = txtSuctGaugeHeight.Text
 
-            .Range("A4").Select()
-            .ActiveCell.FormulaR1C1 = "Loop = " & cmbPLCLoop.Items(cmbPLCLoop.SelectedIndex) 'VB6.GetItemString(cmbPLCLoop, cmbPLCLoop.SelectedIndex)
+            .Range("C4").Select()
+            .ActiveCell.FormulaR1C1 = cmbPLCLoop.Items(cmbPLCLoop.SelectedIndex)
 
-            .Range("E4").Select()
-            .ActiveCell.FormulaR1C1 = "Discharge Gauge Height = " & txtDischGaugeHeight.Text
+            .Range("H4").Select()
+            .ActiveCell.FormulaR1C1 = txtDischGaugeHeight.Text
 
-            .Range("A5").Select()
-            .ActiveCell.FormulaR1C1 = "Suction Pipe Diameter = " & cmbSuction.Items(cmbSuction.SelectedIndex) 'VB6.GetItemString(cmbSuction, cmbSuction.SelectedIndex)
+            .Range("H6").Select()
+            .ActiveCell.FormulaR1C1 = cmbSuction.Items(cmbSuction.SelectedIndex)
 
-            .Range("E5").Select()
-            .ActiveCell.FormulaR1C1 = "Discharge Pipe Diameter = " & cmbDisch.Items(cmbDisch.SelectedIndex) 'VB6.GetItemString(cmbDisch, cmbDisch.SelectedIndex)
+            .Range("H5").Select()
+            .ActiveCell.FormulaR1C1 = cmbDisch.Items(cmbDisch.SelectedIndex)
 
-            .Range("A6").Select()
+            .Range("A7").Select()
             .ActiveCell.FormulaR1C1 = "Comment:"
 
             TextToWrite = Replace(txtComment.Text, vbCrLf, " - ")
-            .Range("B6").Select()
+            .Range("C7").Select()
             .ActiveCell.FormulaR1C1 = TextToWrite
             .Selection.WrapText = False
-
-            .Range("A10").Select()
-            .ActiveCell.FormulaR1C1 = "Time"
-
-            .Range("B10").Select()
-            .ActiveCell.FormulaR1C1 = "Flow"
-
-            .Range("C10").Select()
-            .ActiveCell.FormulaR1C1 = "Suct"
-
-            .Range("D10").Select()
-            .ActiveCell.FormulaR1C1 = "Disch"
-
-            .Range("E10").Select()
-            .ActiveCell.FormulaR1C1 = "Temp"
-
-            .Range("F10").Select()
-            .ActiveCell.FormulaR1C1 = "Valve"
-
-            .Range("G10").Select()
-            .ActiveCell.FormulaR1C1 = "Suction"
-
-            .Range("H10").Select()
-            .ActiveCell.FormulaR1C1 = "Discharge"
-
-            .Range("I10").Select()
-            .ActiveCell.FormulaR1C1 = "Specific"
-
-            .Range("J10").Select()
-            .ActiveCell.FormulaR1C1 = "Vapor"
-
-            .Range("K10").Select()
-            .ActiveCell.FormulaR1C1 = "NPSHa"
-
-            .Range("L10").Select()
-            .ActiveCell.FormulaR1C1 = "TDH"
-
-            .Range("M10").Select()
-            .ActiveCell.FormulaR1C1 = "% Head"
-
-            .Range("C11").Select()
-            .ActiveCell.FormulaR1C1 = "Press"
-
-            .Range("D11").Select()
-            .ActiveCell.FormulaR1C1 = "Press"
-
-            .Range("F11").Select()
-            .ActiveCell.FormulaR1C1 = "Position"
-
-            .Range("G11").Select()
-            .ActiveCell.FormulaR1C1 = "Vel Head"
-
-            .Range("H11").Select()
-            .ActiveCell.FormulaR1C1 = "Vel Head"
-
-            .Range("I11").Select()
-            .ActiveCell.FormulaR1C1 = "Volume"
-
-            .Range("J11").Select()
-            .ActiveCell.FormulaR1C1 = "Pressure"
-
             ExcelRow = 12 'start writing at row 12
 
         End With
@@ -992,6 +1086,7 @@ GotName:
         Dim ns1 As Series
         Dim ChartSheet As Chart
         Dim j As Integer
+
         With xlApp
             ChartSheet = .Charts.Add ' xlapp.Charts.Add 'add a chart
             xlApp.ActiveChart.ChartArea.Clear()
@@ -1010,7 +1105,6 @@ GotName:
 
                 'make the chart a new sheet and add the sheet name
                 .Location(XlChartLocation.xlLocationAsNewSheet, "Chart " & WorkSheetName)
-
                 'white inside
                 .PlotArea.Interior.ColorIndex = Constants.xlNone
 
@@ -1035,6 +1129,7 @@ GotName:
                 'set the chart title as the serial number2
                 xlApp.ActiveChart.HasTitle = True
                 xlApp.ActiveChart.ChartTitle.Text = txtSN.Text & vbCr & WorkSheetName & vbCr & Today
+
             End With
 
             If xlApp.Worksheets.Count = 1 Then 'first sheet in this file
@@ -1068,6 +1163,28 @@ GotName:
                     Case 7
                 End Select
             End If
+
+            'move the chart to embed in worksheet
+            With xlApp.Charts("Chart " & WorkSheetName)
+                .Location(Where:=XlChartLocation.xlLocationAsObject, Name:=WorkSheetName)
+            End With
+
+            'position and fix size
+
+            Dim RngToCover As Range
+            Dim ChtOb As ChartObject
+
+            'use sheet name from above
+            xlApp.Worksheets(WorkSheetName).activate
+
+            RngToCover = xlApp.ActiveSheet.Range("O10:X40")
+            ChtOb = xlApp.ActiveChart.Parent
+            ChtOb.Height = RngToCover.Height ' resize
+            ChtOb.Width = RngToCover.Width   ' resize
+            ChtOb.Top = RngToCover.Top       ' reposition
+            ChtOb.Left = RngToCover.Left     ' reposition
+
+
         End With
 
         '    xlApp.Quit
@@ -1122,6 +1239,11 @@ GotName:
         'Dim SummaryWorksheet As excel.Worksheet
         'Dim wsCount As Integer
         'Dim arrayrows As Integer
+
+        'so we can write data back to current sheet
+        Dim currentSheetFlow As Single
+        Dim currentSheetHead As Single
+
         Dim xlRange As Range
 
         'count of worksheets in workbook
@@ -1139,7 +1261,8 @@ GotName:
 
         'now there should be no worksheet names summary, so make a new one at the beginning
 
-        xlSheet = xlApp.Worksheets.Add(Before:=xlApp.Charts("all runs"))    'add a new worksheet
+        '       xlSheet = xlApp.Worksheets.Add(Before:=xlApp.Charts("all runs"))    'add a new worksheet
+        xlSheet = xlApp.Worksheets.Add(Before:=xlApp.Worksheets(1))    'add a new worksheet
         xlSheet.Name = "NPSHr Summary"       'give it the desired name
 
         Dim aRows As Integer = WorksheetsCount
@@ -1166,9 +1289,9 @@ GotName:
             If xlSheet.Name <> "NPSHr Summary" Then
                 BadNPSHr = False
                 If i = 1 Then
-                    xlRange = xlSheet.UsedRange.Find("Serial Number")
+                    xlRange = xlSheet.Range("C1")
                     SN = xlRange.Value.ToString
-                    SN = SN.Substring(Len("Serial Number - "))
+                    'SN = 'SN.Substring(Len("Serial Number - "))
                 End If
 
                 xlRange = xlSheet.UsedRange.Find("% Head")
@@ -1206,6 +1329,11 @@ GotName:
 
                     ArrayForExcel(i, 0) = Interpolate(MaxFlow, MinFlow, MaxPct, MinPct)
                     ArrayForExcel(i, 1) = Interpolate(MaxNPSHa, MinNPSHa, MaxPct, MinPct)
+                    'save data to write back into our sheet
+                    If xlSheet.Name = WorkSheetName Then
+                        currentSheetFlow = ArrayForExcel(i, 0)
+                        currentSheetHead = ArrayForExcel(i, 1)
+                    End If
                 End If
                 i += 1
             End If
@@ -1261,6 +1389,10 @@ GotName:
         End With
         'Dim series1 As Series = CType(.SeriesCollection(1), Series)
         '.SeriesCollection(1).Trendlines.Add(XlTrendlineType.xlPolynomial)
+        'write npshr data back to worksheet
+        xlApp.Worksheets(WorkSheetName).activate
+        xlApp.Range("C5").FormulaR1C1 = String.Format("{0:000.00}", currentSheetFlow.ToString)
+        xlApp.Range("C6").FormulaR1C1 = String.Format("{0:000.00}", currentSheetHead.ToString)
     End Sub
 
     Private Function Interpolate(ByVal HiVal As Single, ByVal LowVal As Single, ByVal HiPctHead As Single, ByVal LowPctHead As Single, Optional ByVal ActualPctHead As Single = 0.97) As Single
@@ -1272,4 +1404,167 @@ GotName:
 
     End Function
 
+    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
+
+        Dim numOfRows As Integer = 0
+        Dim wName As String = sender.selecteditem.ToString
+        Dim wNamesub As String = wName.Substring(0, wName.IndexOf(" -- "))
+        For Each w As Worksheet In xlInputApp.Worksheets
+            If w.Name = wNamesub Then
+                numOfRows = w.UsedRange.Rows.Count - 11
+                w.Activate()
+            End If
+        Next
+
+        Dim s As InputData
+        'Dim l As List(Of InputData) = New List(Of InputData)
+        pd = New PumpData
+
+        With xlInputApp.ActiveSheet
+            For r As Integer = 12 To numOfRows + 12
+                s = New InputData
+                s.Flow = .cells(r, 2).value
+                s.SuctPress = .cells(r, 3).value
+                s.DischPress = .cells(r, 4).value
+                s.Temp = .cells(r, 5).value
+                s.ValvePosition = .cells(r, 6).value
+                lstExcelInput.Add(s)
+            Next r
+
+            'see if this is a modified sheet with serial number, etc. separate from the title, or the old sheet with one string and an = sign
+
+            If .range("A1").value.Contains("-") Then
+                pd.SerialNumber = splitString(.range("A1").value)
+                pd.StartingTDH = splitString(.range("A2").value)
+                pd.StartingFlow = splitString(.range("A3").value)
+                pd.SuctPipeDia = String.Format("{0:0.00}", splitString(.range("A5").value))
+                pd.BP = splitString(.range("E2").value)
+                pd.SuctGaugeHeight = splitString(.range("E3").value)
+                pd.DischGaugeHeight = splitString(.range("E4").value)
+                pd.DischPipeDia = String.Format("{0:0.00}", splitString(.range("E5").value))
+            Else
+                'fill pump data
+                pd.SerialNumber = .range("C1").value
+                pd.StartingTDH = .range("C2").value
+                pd.StartingFlow = .range("C3").value
+                pd.SuctPipeDia = String.Format("{0:0.00}", .range("H6").value)
+                pd.BP = .range("H2").value
+                pd.SuctGaugeHeight = .range("H3").value
+                pd.DischGaugeHeight = .range("H4").value
+                pd.DischPipeDia = String.Format("{0:0.00}", .range("H5").value)
+            End If
+
+        End With
+
+        'fill in screen
+        Me.txtSN.Text = pd.SerialNumber
+        Me.txtSuctGaugeHeight.Text = pd.SuctGaugeHeight
+        Me.txtDischGaugeHeight.Text = pd.DischGaugeHeight
+        Me.cmbSuction.SelectedItem = pd.SuctPipeDia
+        Me.cmbDisch.SelectedItem = pd.DischPipeDia
+        Me.txtAveTDH.Text = pd.StartingTDH
+        'Me.txtFlowForCalcs.Text = pd.StartingFlow
+
+        'use first pd from l
+        rowExcelInput = 0
+        blnListDone = False
+        blnUsingExcelInput = True
+
+
+        lblInputData.Text = "Input Data From -> " & inputFileName & " - Tab " & wNamesub
+        lblInputData.Visible = True
+
+        ListBox1.Visible = False
+        lblListBox.Visible = False
+
+        'kill excel input process that we just opened
+        Dim xlProc = Process.GetProcessesByName("Excel")
+        For Each p As Process In xlProc
+            If p.Id = inputExcelProcessid Then
+                p.Kill()
+            End If
+        Next
+
+        Me.cmdSaveData.Focus()
+
+    End Sub
+    Private Function splitString(strIn As String) As String
+        If strIn.Contains("=") Then
+            Dim parmString() As String
+            parmString = strIn.Split("=")
+            Return Trim(parmString(1))
+        ElseIf strIn.Contains("-") Then
+            Dim split As Int16 = strIn.IndexOf("-")
+            Return Trim(strIn.Substring(split + 1))
+        Else
+            Return ""
+        End If
+
+    End Function
+    Private Function stripData(info As String) As String
+        'remove data (330.18) from string like Barometric Pressure = 30.18
+        Dim li As Integer = info.LastIndexOf(" ")
+        stripData = info.Substring(li + 1)
+    End Function
+
+    Private Sub txtSN_Leave(sender As Object, e As EventArgs) Handles txtSN.Leave
+        'serial number entered, do some lookup
+        'see if the serial number exists in pumpdata
+
+        Dim ConnectionString As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & sDataBaseName & ";Persist Security Info=False"
+        Dim SQLString As String = "SELECT TempPumpData.SerialNumber, TempPumpData.BillToCustomer, TempPumpData.ModelNumber, TempPumpData.SalesOrderNumber, TempPumpData.NPSHr, " &
+            "TempPumpData.ImpellerDia, TempPumpData.DesignFlow,TempPumpData.DesignTDH, CirculationPath.Description, Voltage.Description, Frequency.Description, RPM.Description " &
+            "From RPM INNER Join (((CirculationPath INNER Join TempPumpData On CirculationPath.CirculationPath = TempPumpData.CirculationPath) " &
+            "INNER Join Frequency On TempPumpData.Frequency = Frequency.Frequency) INNER Join Voltage On TempPumpData.Voltage = Voltage.Voltage) ON RPM.RPM = TempPumpData.RPM " &
+            "WHERE (((TempPumpData.SerialNumber)= '" & txtSN.Text & "' ));"
+
+
+        Using con As OleDb.OleDbConnection = New OleDb.OleDbConnection(ConnectionString)
+
+            Dim cmd As OleDbCommand = New OleDbCommand(SQLString, con)
+            con.Open()
+
+            Dim rdr As OleDbDataReader
+            rdr = cmd.ExecuteReader
+
+            rdr.Read()
+
+            If Not rdr.HasRows Then
+                lblCustomer.Text = String.Empty
+                lblModelNumber.Text = String.Empty
+                lblSalesOrder.Text = String.Empty
+                lblNPSHr.Text = String.Empty
+                lblImpDia.Text = String.Empty
+                lblCircPath.Text = String.Empty
+                lblVoltage.Text = String.Empty
+                lblFrequency.Text = String.Empty
+                lblRPM.Text = String.Empty
+                lblDesignFlow.Text = String.Empty
+                lblDesignTDH.Text = String.Empty
+            Else
+                lblCustomer.Text = RdrData(rdr, "BillToCustomer")
+                lblModelNumber.Text = RdrData(rdr, "ModelNumber")
+                lblSalesOrder.Text = RdrData(rdr, "SalesOrderNumber")
+                lblNPSHr.Text = RdrData(rdr, "NPSHr")
+                lblImpDia.Text = RdrData(rdr, "ImpellerDia")
+                lblCircPath.Text = RdrData(rdr, "CirculationPath.Description")
+                lblVoltage.Text = RdrData(rdr, "Voltage.Description")
+                lblFrequency.Text = RdrData(rdr, "Frequency.Description")
+                lblRPM.Text = RdrData(rdr, "RPM.Description")
+                lblDesignFlow.Text = RdrData(rdr, "DesignFlow")
+                lblDesignTDH.Text = RdrData(rdr, "DesignTDH")
+            End If
+            rdr.Close()
+
+        End Using
+    End Sub
+
+    Private Function RdrData(rdr As OleDbDataReader, fname As String) As String
+        If IsDBNull(rdr(fname)) Then
+            RdrData = String.Empty
+        Else
+            RdrData = rdr(fname)
+        End If
+
+    End Function
 End Class

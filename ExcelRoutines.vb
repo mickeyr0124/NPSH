@@ -4,8 +4,6 @@ Imports Microsoft.Office.Interop.Excel
 Imports PLCCommLibrary
 Imports System.Collections.Generic
 Module ExcelRoutines
-    Public Declare Function GetComputerName Lib "kernel32" Alias "GetComputerNameA" (ByVal lpBuffer As String, ByRef nSize As Integer) As Integer
-
     'instantiate new class of plc communications
     Public PLCCm As New PLCCommLibrary.PLCComm
 
@@ -15,7 +13,7 @@ Module ExcelRoutines
     'declare an error list for PCL Comm
     Public ErrorList As List(Of String) = New List(Of String)
 
-    Structure DataSet
+    Structure oledbDataSet
         Dim Flow As Single 'input flow
         Dim SuctionPressure As Single 'input suct press
         Dim DischargePressure As Single 'input disch press
@@ -35,13 +33,13 @@ Module ExcelRoutines
         Dim PercentHead As Single 'output percent head
     End Structure
 
-    Public DataSets(2) As DataSet
-    Public UseDataset As DataSet
+    Public DataSets(2) As oledbDataSet
+    Public UseDataset As oledbDataSet
     Public Calibrating As Boolean 'in the process of calibrating
     Public vPlot1(10000, 1) As Single 'NPSH vs TDH plot
     Public Semaphore As Boolean
 
-    Public Const sDirectoryName As String = "\\checpsa\f\en\groups\shared\Calibration and Rundown\NPSH"
+    Public Const sDirectoryName As String = "\\tei-main-01\f\en\groups\shared\Calibration and Rundown\NPSH"
     Public sDataBaseName As String
     Public SaveFileName As String
     Public cn As New ADODB.Connection
@@ -53,10 +51,7 @@ Module ExcelRoutines
     Public WorkSheetName As String 'Worksheet Tab Name
     Public WritingToCalFile As Boolean
 
-
-    Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (ByRef Destination As Single, ByRef Source As Long, ByVal Length As Integer)
-
-    Public Sub NewWorkBook()
+    Public Sub NewWorkBook(SaveFileName As String)
 
         'we've just added a new workbook, delete sheet1, sheet2, etc
         xlApp.DisplayAlerts = False
@@ -66,7 +61,25 @@ Module ExcelRoutines
         xlApp.DisplayAlerts = True
 
         WorkSheetName = InputBox("Enter Title Worksheet Name for this run.") 'get the desired name
-        xlApp.Worksheets(1).Name = WorkSheetName 'and name the sheet
+        '        xlApp.Worksheets(1).Name = WorkSheetName 'and name the sheet
+
+        'copy the "Template" sheet from \\tei-main-01\f\groups\shared\databases\npshtemplate.xls
+        Dim TemplateFile As String = "\\tei-main-01\f\groups\shared\databases\npshtemplate.xls"
+        Dim sourcewb As Workbook = xlApp.Workbooks.Open(TemplateFile)
+        Dim destwb As Workbook = xlBook
+        Dim sourcewks As Worksheet = sourcewb.Worksheets("Template")
+
+        sourcewks.Copy(After:=destwb.Sheets(destwb.Sheets.Count))
+        sourcewb.Close()
+
+        'get present sheet
+        destwb.Activate()
+        '        xlApp.Worksheets.Add(, xlApp.Worksheets(xlApp.Worksheets.Count)) 'add a worksheer
+        'rename "Template" to desired name
+        xlApp.Worksheets("Template").Name = WorkSheetName 'give it the desired name
+        xlApp.Worksheets(1).delete()
+        destwb.SaveAs(Filename:=SaveFileName, FileFormat:=XlWindowState.xlNormal)
+
 
     End Sub
     Public Function GetWorksheetTabs() As Object
@@ -119,24 +132,25 @@ Module ExcelRoutines
             Next i
         End While
 
-        xlApp.Worksheets.Add(, xlApp.Worksheets(xlApp.Worksheets.Count)) 'add a worksheer
-        xlApp.Worksheets(xlApp.Worksheets.Count).Name = WorkSheetName 'give it the desired name
+
+        'copy the "Template" sheet from \\tei-main-01\f\groups\shared\databases\npshtemplate.xls
+        Dim TemplateFile As String = "\\tei-main-01\f\groups\shared\databases\npshtemplate.xls"
+        Dim sourcewb As Workbook = xlApp.Workbooks.Open(TemplateFile)
+        Dim destwb As Workbook = xlBook
+        Dim sourcewks As Worksheet = sourcewb.Worksheets("Template")
+
+        sourcewks.Copy(After:=destwb.Sheets(destwb.Sheets.Count))
+        sourcewb.Close()
+
+        'get present sheet
+        destwb.Activate()
+        '        xlApp.Worksheets.Add(, xlApp.Worksheets(xlApp.Worksheets.Count)) 'add a worksheer
+        'rename "Template" to desired name
+        xlApp.Worksheets("Template").Name = WorkSheetName 'give it the desired name
+        destwb.Save()
+
         GetWorksheetTabs = MsgBoxResult.Yes 'say that the results were ok
 
-    End Function
-    Public Function GetMachineName() As String
 
-        Dim plngSize As Integer
-        Dim pstrBuffer As String
-
-        pstrBuffer = Space(200)
-
-        plngSize = Len(pstrBuffer)
-
-        If GetComputerName(pstrBuffer, plngSize) Then
-            GetMachineName = Left(pstrBuffer, plngSize)
-        Else
-            GetMachineName = ""
-        End If
     End Function
 End Module
