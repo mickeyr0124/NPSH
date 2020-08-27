@@ -84,6 +84,15 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <COMReference Include="ADODB">
+      <Guid>{2A75196C-D9EB-4129-B803-931327F72D5C}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
     <COMReference Include="VBIDE">
       <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>5</VersionMajor>
@@ -140,13 +149,6 @@
       <VersionMajor>1</VersionMajor>
       <VersionMinor>0</VersionMinor>
       <WrapperTool>tlbimp</WrapperTool>
-    </COMReference>
-    <COMReference Include="ADODB">
-      <Guid>{EF53050B-882E-4776-B643-EDA472E8E3F2}</Guid>
-      <Lcid>0</Lcid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>7</VersionMinor>
-      <WrapperTool>primary</WrapperTool>
     </COMReference>
     <COMReference Include="AxMSChart20Lib">
       <Guid>{65E121D4-0C60-11D2-A9FC-0000F8754DA1}</Guid>
